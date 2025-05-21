@@ -41,7 +41,12 @@ export async function get_emotional_support_response(
       ],
     });
 
-    return response.content[0].text;
+    // Extract text from response
+    let responseText = 'I apologize, but I cannot provide a response at this time.';
+    if (response.content[0].type === 'text') {
+      responseText = response.content[0].text;
+    }
+    return responseText;
   } catch (error) {
     console.error('Error getting response from Claude:', error);
     return "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.";
@@ -68,7 +73,12 @@ export async function get_coping_suggestions(emotion: string): Promise<string> {
       ],
     });
 
-    return response.content[0].text;
+    // Extract text from response
+    let responseText = 'I apologize, but I cannot provide suggestions at this time.';
+    if (response.content[0].type === 'text') {
+      responseText = response.content[0].text;
+    }
+    return responseText;
   } catch (error) {
     console.error('Error getting coping suggestions from Claude:', error);
     return "I'm sorry, I'm having trouble generating suggestions right now. Please try again in a moment.";
@@ -98,7 +108,12 @@ export async function get_motivation(situation?: string): Promise<string> {
       ],
     });
 
-    return response.content[0].text;
+    // Extract text from response
+    let responseText = 'Stay persistent! Every small step you take brings you closer to your goals. You\'ve got this!';
+    if (response.content[0].type === 'text') {
+      responseText = response.content[0].text;
+    }
+    return responseText;
   } catch (error) {
     console.error('Error getting motivation from Claude:', error);
     return "Stay persistent! Every small step you take brings you closer to your goals. You've got this!";
