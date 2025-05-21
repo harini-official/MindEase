@@ -158,6 +158,7 @@ const AudioLibrary = () => {
                     className="w-full audio-player" 
                     controls
                     preload="auto"
+                    src={resource.audioUrl}
                     onEnded={() => setPlaying(null)}
                     onPause={() => {
                       if (playing === resource.id) {
@@ -165,7 +166,6 @@ const AudioLibrary = () => {
                       }
                     }}
                   >
-                    <source src={resource.audioUrl} type="audio/mp3" />
                     Your browser does not support the audio element.
                   </audio>
                 </div>

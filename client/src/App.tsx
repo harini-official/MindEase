@@ -46,14 +46,24 @@ function App() {
     
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     } else {
       // Check system preference
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const initialTheme = prefersDark ? "dark" : "light";
       setTheme(initialTheme);
-      document.documentElement.classList.toggle("dark", prefersDark);
+      if (prefersDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
+    
+    console.log("Theme initialized:", savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
   }, []);
 
   // Update the document class when theme changes
