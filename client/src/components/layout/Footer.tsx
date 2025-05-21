@@ -2,7 +2,7 @@ import { Link } from "wouter";
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral-800 text-white py-12">
+    <footer className="bg-neutral-800 dark:bg-neutral-900 text-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
@@ -53,7 +53,7 @@ const Footer = () => {
               <input 
                 type="email" 
                 placeholder="Your email" 
-                className="px-4 py-2 rounded-l-lg w-full focus:outline-none focus:ring-2 focus:ring-primary text-neutral-800"
+                className="px-4 py-2 rounded-l-lg w-full focus:outline-none focus:ring-2 focus:ring-primary text-neutral-800 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400"
               />
               <button className="bg-primary hover:bg-primary-dark px-4 py-2 rounded-r-lg transition">
                 <i className="fas fa-paper-plane"></i>
