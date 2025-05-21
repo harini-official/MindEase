@@ -10,7 +10,6 @@ const CATEGORIES = ["All", "Focus", "Meditation", "Sleep", "Nature Sounds"];
 const AudioLibrary = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [playing, setPlaying] = useState<number | null>(null);
-  const { theme } = useContext(ThemeContext);
   const audioRefs = useRef<Record<number, HTMLAudioElement | null>>({});
   
   const { data: resources, isLoading } = useQuery<AudioResource[]>({

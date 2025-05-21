@@ -3,12 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MotivationQuote } from "@/lib/types";
-import { useContext } from "react";
-import { ThemeContext } from "../../App";
+// No longer need theme context
 
 const DailyMotivation = () => {
   const [displayedQuotes, setDisplayedQuotes] = useState<MotivationQuote[]>([]);
-  const { theme } = useContext(ThemeContext);
 
   const { data: quotes, isLoading, refetch } = useQuery<MotivationQuote[]>({
     queryKey: ['/api/motivation-quotes'],
