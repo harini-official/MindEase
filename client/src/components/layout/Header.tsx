@@ -39,6 +39,9 @@ const Header = () => {
           <a href="#testimonials" className="font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-dark dark:hover:text-primary-light transition">
             Testimonials
           </a>
+          <Link href="/chat" className="font-medium text-primary-dark dark:text-primary-light hover:text-primary hover:underline transition">
+            Chat Room
+          </Link>
         </nav>
         
         <div className="flex items-center space-x-2">

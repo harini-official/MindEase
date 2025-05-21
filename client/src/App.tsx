@@ -17,6 +17,7 @@ function Router() {
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/chat" component={Chat} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />
         </Switch>
