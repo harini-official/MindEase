@@ -36,18 +36,21 @@ export function ThemeToggle() {
     localStorage.setItem("theme", newTheme);
   };
 
+  // This is the opposite of what we might expect, but we want to show what the user can switch TO
+  const isDark = theme === "dark";
+  
   return (
     <Button 
       variant="ghost" 
       size="icon" 
       onClick={toggleTheme} 
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
       className="rounded-full text-neutral-700 dark:text-neutral-300 hover:bg-transparent hover:text-primary-dark dark:hover:text-primary-light"
     >
-      {theme === "light" ? (
-        <Moon className="h-5 w-5" />
-      ) : (
+      {isDark ? (
         <Sun className="h-5 w-5" />
+      ) : (
+        <Moon className="h-5 w-5" />
       )}
     </Button>
   );
