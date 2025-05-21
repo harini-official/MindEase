@@ -14,8 +14,114 @@ import {
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
+import { WebSocketServer, WebSocket } from 'ws';
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Create HTTP server instance
+  const httpServer = createServer(app);
+  
+  // Set up WebSocket Server for chat functionality
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store connected clients with their usernames
+  const clients = new Map<WebSocket, { username: string, room: string }>();
+  
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('WebSocket client connected');
+    
+    // Handle messages from clients
+    ws.on('message', (message: string) => {
+      try {
+        const data = JSON.parse(message.toString());
+        
+        // Handle different message types
+        switch (data.type) {
+          case 'join':
+            // User joins a chat room
+            const { username, room } = data;
+            clients.set(ws, { username, room });
+            
+            // Notify all users in the room that someone joined
+            broadcastToRoom(room, {
+              type: 'system',
+              content: `${username} has joined the chat`,
+              username: 'System',
+              timestamp: new Date().toISOString(),
+              room
+            });
+            
+            // Send list of active users in this room
+            const roomUsers = Array.from(clients.entries())
+              .filter(([_, info]) => info.room === room)
+              .map(([_, info]) => info.username);
+            
+            ws.send(JSON.stringify({
+              type: 'room_users',
+              users: roomUsers,
+              room
+            }));
+            
+            break;
+            
+          case 'message':
+            // Regular chat message
+            const clientInfo = clients.get(ws);
+            if (clientInfo) {
+              broadcastToRoom(clientInfo.room, {
+                type: 'message',
+                content: data.content,
+                username: clientInfo.username,
+                timestamp: new Date().toISOString(),
+                room: clientInfo.room
+              });
+            }
+            break;
+            
+          case 'leave':
+            // User leaves a chat room
+            const client = clients.get(ws);
+            if (client) {
+              broadcastToRoom(client.room, {
+                type: 'system',
+                content: `${client.username} has left the chat`,
+                username: 'System',
+                timestamp: new Date().toISOString(),
+                room: client.room
+              });
+              clients.delete(ws);
+            }
+            break;
+        }
+      } catch (error) {
+        console.error('Error handling WebSocket message:', error);
+      }
+    });
+    
+    // Handle client disconnection
+    ws.on('close', () => {
+      const client = clients.get(ws);
+      if (client) {
+        broadcastToRoom(client.room, {
+          type: 'system',
+          content: `${client.username} has disconnected`,
+          username: 'System',
+          timestamp: new Date().toISOString(),
+          room: client.room
+        });
+        clients.delete(ws);
+      }
+    });
+  });
+  
+  // Function to broadcast messages to all clients in a specific room
+  function broadcastToRoom(room: string, message: any) {
+    const messageStr = JSON.stringify(message);
+    clients.forEach((clientInfo, client) => {
+      if (clientInfo.room === room && client.readyState === WebSocket.OPEN) {
+        client.send(messageStr);
+      }
+    });
+  }
   // API routes for motivation quotes
   app.get("/api/motivation-quotes", async (req: Request, res: Response) => {
     try {
