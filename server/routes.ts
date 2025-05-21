@@ -17,11 +17,11 @@ import { db } from "./db";
 import { WebSocketServer, WebSocket } from 'ws';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Create HTTP server instance
-  const httpServer = createServer(app);
+  // Create HTTP server instance for both Express and WebSockets
+  const server = createServer(app);
   
   // Set up WebSocket Server for chat functionality
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  const wss = new WebSocketServer({ server, path: '/ws' });
   
   // Store connected clients with their usernames
   const clients = new Map<WebSocket, { username: string, room: string }>();
@@ -426,7 +426,5 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
-
-  return httpServer;
+  return server;
 }
