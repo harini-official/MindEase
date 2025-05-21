@@ -41,12 +41,15 @@ export async function get_emotional_support_response(
       ],
     });
 
-    // Extract text from response
-    let responseText = 'I apologize, but I cannot provide a response at this time.';
-    if (response.content[0].type === 'text') {
-      responseText = response.content[0].text;
+    // Extract the text from the response
+    if (response.content && response.content.length > 0) {
+      const content = response.content[0];
+      if (content.type === 'text') {
+        return content.text;
+      }
     }
-    return responseText;
+    
+    return "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.";
   } catch (error) {
     console.error('Error getting response from Claude:', error);
     return "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.";
@@ -73,12 +76,15 @@ export async function get_coping_suggestions(emotion: string): Promise<string> {
       ],
     });
 
-    // Extract text from response
-    let responseText = 'I apologize, but I cannot provide suggestions at this time.';
-    if (response.content[0].type === 'text') {
-      responseText = response.content[0].text;
+    // Extract the text from the response
+    if (response.content && response.content.length > 0) {
+      const content = response.content[0];
+      if (content.type === 'text') {
+        return content.text;
+      }
     }
-    return responseText;
+    
+    return "I'm sorry, I'm having trouble generating suggestions right now. Please try again in a moment.";
   } catch (error) {
     console.error('Error getting coping suggestions from Claude:', error);
     return "I'm sorry, I'm having trouble generating suggestions right now. Please try again in a moment.";
@@ -108,12 +114,15 @@ export async function get_motivation(situation?: string): Promise<string> {
       ],
     });
 
-    // Extract text from response
-    let responseText = 'Stay persistent! Every small step you take brings you closer to your goals. You\'ve got this!';
-    if (response.content[0].type === 'text') {
-      responseText = response.content[0].text;
+    // Extract the text from the response
+    if (response.content && response.content.length > 0) {
+      const content = response.content[0];
+      if (content.type === 'text') {
+        return content.text;
+      }
     }
-    return responseText;
+
+    return "Stay persistent! Every small step you take brings you closer to your goals. You've got this!";
   } catch (error) {
     console.error('Error getting motivation from Claude:', error);
     return "Stay persistent! Every small step you take brings you closer to your goals. You've got this!";

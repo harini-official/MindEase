@@ -15,10 +15,14 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { WebSocketServer, WebSocket } from 'ws';
+import aiChatRoutes from './routes/ai-chat';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server instance for both Express and WebSockets
   const server = createServer(app);
+  
+  // Register AI chat routes
+  app.use('/api/ai-chat', aiChatRoutes);
   
   // Set up WebSocket Server for chat functionality
   const wss = new WebSocketServer({ server, path: '/ws' });
