@@ -20,45 +20,96 @@ const AudioLibrary = () => {
     activeCategory === "All" || resource.category === activeCategory
   );
 
-  // Create sample audio URLs if needed
+  // Create accurate audio path references
   useEffect(() => {
     if (resources && resources.length > 0) {
+      // Make sure the audio elements are properly configured
       resources.forEach(resource => {
-        // Create dummy audio files if they don't exist or check URLs
-        if (resource.audioUrl.startsWith('/audio/')) {
-          // This is just logging to make sure we know which URLs we're dealing with
-          console.log(`Audio resource ${resource.id} has URL: ${resource.audioUrl}`);
+        if (audioRefs.current[resource.id]) {
+          const audioEl = audioRefs.current[resource.id];
+          
+          // Make sure the path is correct and preload the audio
+          if (audioEl) {
+            audioEl.src = resource.audioUrl;
+            audioEl.load();
+          }
+          
+          console.log(`Audio resource ${resource.id} configured: ${resource.audioUrl}`);
         }
       });
     }
-  }, [resources]);
+  }, [resources, audioRefs.current]);
 
   const handlePlayToggle = (id: number) => {
-    if (playing === id) {
+    try {
+      if (playing === id) {
+        // If already playing this audio, pause it
+        setPlaying(null);
+        if (audioRefs.current[id]) {
+          audioRefs.current[id]?.pause();
+        }
+      } else {
+        // Stop any currently playing audio
+        if (playing !== null && audioRefs.current[playing]) {
+          audioRefs.current[playing]?.pause();
+        }
+        
+        // Start playing the selected audio
+        setPlaying(id);
+        const audioElement = audioRefs.current[id];
+        
+        if (audioElement) {
+          console.log(`Playing audio ${id}: ${audioElement.src}`);
+          
+          // Make sure the audio is loaded
+          audioElement.load();
+          
+          // Create a small delay before playing
+          setTimeout(() => {
+            // Try playing the audio
+            const playPromise = audioElement.play();
+            
+            // Handle play errors properly
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log(`Audio ${id} playing successfully`);
+                })
+                .catch((e) => {
+                  console.error("Audio playback failed:", e);
+                  setPlaying(null);
+                });
+            }
+          }, 100);
+        } else {
+          console.error(`Audio element for id ${id} not found`);
+        }
+      }
+    } catch (err) {
+      console.error("Error in audio playback:", err);
       setPlaying(null);
-      if (audioRefs.current[id]) {
-        audioRefs.current[id]?.pause();
-      }
-    } else {
-      // Stop any currently playing audio
-      if (playing !== null && audioRefs.current[playing]) {
-        audioRefs.current[playing]?.pause();
-      }
-      
-      setPlaying(id);
-      if (audioRefs.current[id]) {
-        audioRefs.current[id]?.play().catch((e) => {
-          console.error("Audio playback failed:", e);
-          setPlaying(null);
-        });
-      }
     }
   };
 
-  // Register audio elements with refs
+  // Register audio elements with refs and set up additional event handlers
   const registerAudioRef = (id: number, element: HTMLAudioElement | null) => {
     if (element) {
+      // Store the reference
       audioRefs.current[id] = element;
+      
+      // Add event listeners for better debugging and status tracking
+      element.addEventListener('canplay', () => {
+        console.log(`Audio ${id} is ready to play`);
+      });
+      
+      element.addEventListener('ended', () => {
+        console.log(`Audio ${id} finished playing`);
+        setPlaying(null);
+      });
+      
+      element.addEventListener('error', (e) => {
+        console.error(`Audio ${id} error:`, e);
+      });
     }
   };
 

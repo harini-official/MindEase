@@ -25,6 +25,7 @@ const Home = () => {
       <MindfulBlog />
       <AdvancedPlanner />
       <RelaxSection />
+      <AudioTest />
       <AudioLibrary />
       <Testimonials />
       <ContactSupport />
