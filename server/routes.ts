@@ -5,11 +5,15 @@ import {
   insertMotivationQuoteSchema,
   insertBlogPostSchema,
   insertPlannerTemplateSchema,
+  insertCustomPlannerSchema,
   insertAudioResourceSchema,
   insertTestimonialSchema,
-  insertContactMessageSchema
+  insertContactMessageSchema,
+  customPlanners
 } from "@shared/schema";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes for motivation quotes
@@ -157,6 +161,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(template);
     } catch (error) {
       res.status(500).json({ message: "Failed to update download count" });
+    }
+  });
+
+  // API routes for custom planners
+  app.get("/api/custom-planners", async (req: Request, res: Response) => {
+    try {
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+      const planners = await storage.getCustomPlanners(userId);
+      res.json(planners);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch custom planners" });
+    }
+  });
+
+  app.get("/api/custom-planners/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const planner = await storage.getCustomPlanner(id);
+      if (!planner) {
+        return res.status(404).json({ message: "Custom planner not found" });
+      }
+      
+      res.json(planner);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch custom planner" });
+    }
+  });
+
+  app.post("/api/custom-planners", async (req: Request, res: Response) => {
+    try {
+      const plannerData = insertCustomPlannerSchema.parse(req.body);
+      const newPlanner = await storage.createCustomPlanner(plannerData);
+      
+      // Generate a simulated file URL for the downloadable planner
+      const fileUrl = `/planners/custom-${newPlanner.id}-${Date.now()}.pdf`;
+      
+      // Update the planner with the file URL
+      const [updatedPlanner] = await db
+        .update(customPlanners)
+        .set({ fileUrl })
+        .where(eq(customPlanners.id, newPlanner.id))
+        .returning();
+      
+      res.status(201).json(updatedPlanner);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid planner data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create custom planner" });
     }
   });
 

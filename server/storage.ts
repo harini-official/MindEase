@@ -3,6 +3,7 @@ import {
   motivationQuotes, type MotivationQuote, type InsertMotivationQuote,
   blogPosts, type BlogPost, type InsertBlogPost,
   plannerTemplates, type PlannerTemplate, type InsertPlannerTemplate,
+  customPlanners, type CustomPlanner, type InsertCustomPlanner,
   audioResources, type AudioResource, type InsertAudioResource,
   testimonials, type Testimonial, type InsertTestimonial,
   contactMessages, type ContactMessage, type InsertContactMessage
@@ -132,6 +133,33 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updatedTemplate;
+  }
+  
+  // Custom Planner methods
+  async getCustomPlanners(userId?: number): Promise<CustomPlanner[]> {
+    if (userId) {
+      return await db
+        .select()
+        .from(customPlanners)
+        .where(eq(customPlanners.userId, userId));
+    }
+    return await db.select().from(customPlanners);
+  }
+  
+  async getCustomPlanner(id: number): Promise<CustomPlanner | undefined> {
+    const [planner] = await db
+      .select()
+      .from(customPlanners)
+      .where(eq(customPlanners.id, id));
+    return planner || undefined;
+  }
+  
+  async createCustomPlanner(insertPlanner: InsertCustomPlanner): Promise<CustomPlanner> {
+    const [planner] = await db
+      .insert(customPlanners)
+      .values(insertPlanner)
+      .returning();
+    return planner;
   }
   
   // Audio methods
