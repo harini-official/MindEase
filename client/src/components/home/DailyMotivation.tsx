@@ -3,9 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MotivationQuote } from "@/lib/types";
+import { useContext } from "react";
+import { ThemeContext } from "../../App";
 
 const DailyMotivation = () => {
   const [displayedQuotes, setDisplayedQuotes] = useState<MotivationQuote[]>([]);
+  const { theme } = useContext(ThemeContext);
 
   const { data: quotes, isLoading, refetch } = useQuery<MotivationQuote[]>({
     queryKey: ['/api/motivation-quotes'],
@@ -27,42 +30,42 @@ const DailyMotivation = () => {
   };
 
   return (
-    <section id="motivation" className="py-16 bg-white">
+    <section id="motivation" className="py-16 bg-white dark:bg-neutral-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-poppins font-semibold text-neutral-800 mb-3">Daily Motivation Wall</h2>
-          <p className="text-neutral-600 max-w-2xl mx-auto">Start your day with inspiring quotes, calming images, and uplifting messages.</p>
+          <h2 className="text-3xl font-poppins font-semibold text-neutral-800 dark:text-white mb-3">Daily Motivation Wall</h2>
+          <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">Start your day with inspiring quotes, calming images, and uplifting messages.</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             // Loading skeleton
             Array(3).fill(0).map((_, index) => (
-              <div key={index} className="bg-neutral-100 rounded-xl shadow-soft overflow-hidden">
-                <Skeleton className="w-full h-48" />
+              <div key={index} className="bg-neutral-100 dark:bg-neutral-800 rounded-xl shadow-soft overflow-hidden">
+                <Skeleton className="w-full h-48 dark:bg-neutral-700" />
                 <div className="p-6">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-6 w-3/4 mb-2 dark:bg-neutral-700" />
+                  <Skeleton className="h-4 w-1/3 dark:bg-neutral-700" />
                 </div>
               </div>
             ))
           ) : displayedQuotes.length === 0 ? (
             <div className="col-span-3 text-center py-10">
-              <p className="text-neutral-600">No motivation quotes available. Check back soon!</p>
+              <p className="text-neutral-600 dark:text-neutral-300">No motivation quotes available. Check back soon!</p>
             </div>
           ) : (
             displayedQuotes.map((quote) => (
-              <div key={quote.id} className="bg-neutral-100 rounded-xl shadow-soft overflow-hidden hover:shadow-medium transition-shadow duration-300">
+              <div key={quote.id} className="bg-neutral-100 dark:bg-neutral-800 rounded-xl shadow-soft overflow-hidden hover:shadow-medium transition-shadow duration-300">
                 <img 
                   src={quote.imageUrl} 
                   alt="Motivational background" 
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
-                  <p className="text-lg font-poppins font-medium text-neutral-800 mb-2">
+                  <p className="text-lg font-poppins font-medium text-neutral-800 dark:text-white mb-2">
                     "{quote.quote}"
                   </p>
-                  <p className="text-neutral-600 italic">— {quote.author}</p>
+                  <p className="text-neutral-600 dark:text-neutral-400 italic">— {quote.author}</p>
                 </div>
               </div>
             ))

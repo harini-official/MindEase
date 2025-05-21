@@ -1,15 +1,21 @@
 import { Link } from "wouter";
+import { useContext } from "react";
+import { ThemeContext } from "../../App";
 
 const Hero = () => {
+  const { theme } = useContext(ThemeContext);
+  
   return (
-    <section className="bg-gradient-to-r from-primary-light via-secondary-light to-accent-light py-16 md:py-24">
+    <section className={`${theme === 'light' 
+      ? 'bg-gradient-to-r from-primary-light via-secondary-light to-accent-light' 
+      : 'bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900'} py-16 md:py-24`}>
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
-            <h1 className="text-4xl md:text-5xl font-poppins font-bold text-neutral-800 mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-poppins font-bold text-neutral-800 dark:text-white mb-4 leading-tight">
               Your mental wellness journey starts here
             </h1>
-            <p className="text-xl text-neutral-700 mb-8">
+            <p className="text-xl text-neutral-700 dark:text-neutral-300 mb-8">
               Supporting students through stress, motivation, and academic balance with mindful resources.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -21,7 +27,7 @@ const Hero = () => {
               </a>
               <a 
                 href="#relax" 
-                className="bg-white hover:bg-neutral-200 text-primary-dark font-medium py-3 px-6 rounded-lg transition duration-300 text-center"
+                className="bg-white dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-primary-dark dark:text-white font-medium py-3 px-6 rounded-lg transition duration-300 text-center"
               >
                 Try Breathe Exercise
               </a>
