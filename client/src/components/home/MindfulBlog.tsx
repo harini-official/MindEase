@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BlogPost } from "@/lib/types";
 import { format } from "date-fns";
 
-const CATEGORIES = ["All Topics", "Mental Health", "Exam Stress", "Time Management", "Study Strategies", "Balance"];
+const CATEGORIES = ["All Topics", "Mental Health", "Exam Stress", "Time Management", "Study Tips", "Balance"];
 
 const MindfulBlog = () => {
   const [activeCategory, setActiveCategory] = useState("All Topics");
@@ -83,7 +83,7 @@ const MindfulBlog = () => {
                       post.category === "Exam Stress" ? "bg-primary-light text-primary-dark" :
                       post.category === "Mental Health" ? "bg-neutral-200 text-neutral-700" :
                       post.category === "Time Management" ? "bg-accent-light text-accent-dark" :
-                      post.category === "Study Strategies" ? "bg-secondary-light text-secondary-dark" :
+                      post.category === "Study Tips" ? "bg-secondary-light text-secondary-dark" :
                       "bg-neutral-200 text-neutral-700"
                     }`}>
                       {post.category}
