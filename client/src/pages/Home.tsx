@@ -3,6 +3,7 @@ import Hero from "@/components/home/Hero";
 import DailyMotivation from "@/components/home/DailyMotivation";
 import MindfulBlog from "@/components/home/MindfulBlog";
 import Planner from "@/components/home/Planner";
+import AdvancedPlanner from "@/components/home/AdvancedPlanner";
 import RelaxSection from "@/components/home/RelaxSection";
 import AudioLibrary from "@/components/home/AudioLibrary";
 import Testimonials from "@/components/home/Testimonials";
@@ -22,7 +23,7 @@ const Home = () => {
       <Hero />
       <DailyMotivation />
       <MindfulBlog />
-      <Planner />
+      <AdvancedPlanner />
       <RelaxSection />
       <AudioLibrary />
       <Testimonials />
