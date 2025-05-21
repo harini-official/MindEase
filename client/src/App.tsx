@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -8,18 +7,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-
-// Create a theme context to share theme state across components
-import { createContext } from "react";
-
-export type Theme = "light" | "dark";
-export const ThemeContext = createContext<{
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-}>({
-  theme: "light",
-  setTheme: () => {},
-});
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 function Router() {
   return (
@@ -38,53 +26,14 @@ function Router() {
 }
 
 function App() {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    // On mount, read the theme from localStorage or use system preference
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-      if (savedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const initialTheme = prefersDark ? "dark" : "light";
-      setTheme(initialTheme);
-      if (prefersDark) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-    
-    console.log("Theme initialized:", savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
-  }, []);
-
-  // Update the document class when theme changes
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-    console.log("Theme changed effect:", theme);
-  }, [theme]);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme, setTheme }}>
+      <ThemeProvider>
         <TooltipProvider>
           <Toaster />
           <Router />
         </TooltipProvider>
-      </ThemeContext.Provider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

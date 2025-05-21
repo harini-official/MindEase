@@ -1,53 +1,33 @@
-import { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
-import { ThemeContext } from "../../App";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useContext(ThemeContext);
-
-  // Force apply the current theme when the component mounts
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
+  // Simple direct implementation without context
+  const isDarkMode = document.documentElement.classList.contains("dark");
+  
   const toggleTheme = () => {
-    // Determine what the new theme should be (opposite of current)
-    const newTheme = theme === "light" ? "dark" : "light";
+    const htmlElement = document.documentElement;
     
-    // Log for debugging
-    console.log(`Toggling theme from ${theme} to ${newTheme}`);
-    
-    // Update state
-    setTheme(newTheme);
-    
-    // Force DOM update immediately
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
+    if (htmlElement.classList.contains("dark")) {
+      // Currently dark, switch to light
+      htmlElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     } else {
-      document.documentElement.classList.remove("dark");
+      // Currently light, switch to dark
+      htmlElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     }
-    
-    // Store preference
-    localStorage.setItem("theme", newTheme);
   };
-
-  // This is the opposite of what we might expect, but we want to show what the user can switch TO
-  const isDark = theme === "dark";
   
   return (
     <Button 
       variant="ghost" 
       size="icon" 
       onClick={toggleTheme} 
-      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
       className="rounded-full text-neutral-700 dark:text-neutral-300 hover:bg-transparent hover:text-primary-dark dark:hover:text-primary-light"
     >
-      {isDark ? (
+      {isDarkMode ? (
         <Sun className="h-5 w-5" />
       ) : (
         <Moon className="h-5 w-5" />

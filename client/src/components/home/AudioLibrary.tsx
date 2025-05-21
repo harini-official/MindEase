@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AudioResource } from "@/lib/types";
-import { useContext } from "react";
-import { ThemeContext } from "../../App";
+// Theme imports removed to simplify
 
 const CATEGORIES = ["All", "Focus", "Meditation", "Sleep", "Nature Sounds"];
 
