@@ -7,6 +7,8 @@ import {
   testimonials, type Testimonial, type InsertTestimonial,
   contactMessages, type ContactMessage, type InsertContactMessage
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -46,177 +48,135 @@ export interface IStorage {
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private motivationQuotes: Map<number, MotivationQuote>;
-  private blogPosts: Map<number, BlogPost>;
-  private plannerTemplates: Map<number, PlannerTemplate>;
-  private audioResources: Map<number, AudioResource>;
-  private testimonials: Map<number, Testimonial>;
-  private contactMessages: Map<number, ContactMessage>;
-  
-  private currentUserId: number;
-  private currentMotivationQuoteId: number;
-  private currentBlogPostId: number;
-  private currentPlannerTemplateId: number;
-  private currentAudioResourceId: number;
-  private currentTestimonialId: number;
-  private currentContactMessageId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.motivationQuotes = new Map();
-    this.blogPosts = new Map();
-    this.plannerTemplates = new Map();
-    this.audioResources = new Map();
-    this.testimonials = new Map();
-    this.contactMessages = new Map();
-    
-    this.currentUserId = 1;
-    this.currentMotivationQuoteId = 1;
-    this.currentBlogPostId = 1;
-    this.currentPlannerTemplateId = 1;
-    this.currentAudioResourceId = 1;
-    this.currentTestimonialId = 1;
-    this.currentContactMessageId = 1;
-    
-    // Initialize with sample data
-    this.initializeSampleData();
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
   
   // Motivation methods
   async getMotivationQuotes(): Promise<MotivationQuote[]> {
-    return Array.from(this.motivationQuotes.values());
+    return await db.select().from(motivationQuotes);
   }
   
   async getMotivationQuote(id: number): Promise<MotivationQuote | undefined> {
-    return this.motivationQuotes.get(id);
+    const [quote] = await db.select().from(motivationQuotes).where(eq(motivationQuotes.id, id));
+    return quote || undefined;
   }
   
   async createMotivationQuote(insertQuote: InsertMotivationQuote): Promise<MotivationQuote> {
-    const id = this.currentMotivationQuoteId++;
-    const quote: MotivationQuote = { ...insertQuote, id };
-    this.motivationQuotes.set(id, quote);
+    const [quote] = await db.insert(motivationQuotes).values(insertQuote).returning();
     return quote;
   }
   
   // Blog methods
   async getBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values());
+    return await db.select().from(blogPosts);
   }
   
   async getBlogPostsByCategory(category: string): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values()).filter(
-      post => post.category === category
-    );
+    return await db.select().from(blogPosts).where(eq(blogPosts.category, category));
   }
   
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    return this.blogPosts.get(id);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post || undefined;
   }
   
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
-    const id = this.currentBlogPostId++;
-    const post: BlogPost = { ...insertPost, id };
-    this.blogPosts.set(id, post);
+    const [post] = await db.insert(blogPosts).values(insertPost).returning();
     return post;
   }
   
   // Planner methods
   async getPlannerTemplates(): Promise<PlannerTemplate[]> {
-    return Array.from(this.plannerTemplates.values());
+    return await db.select().from(plannerTemplates);
   }
   
   async getPlannerTemplate(id: number): Promise<PlannerTemplate | undefined> {
-    return this.plannerTemplates.get(id);
+    const [template] = await db.select().from(plannerTemplates).where(eq(plannerTemplates.id, id));
+    return template || undefined;
   }
   
   async createPlannerTemplate(insertTemplate: InsertPlannerTemplate): Promise<PlannerTemplate> {
-    const id = this.currentPlannerTemplateId++;
-    const template: PlannerTemplate = { ...insertTemplate, id, downloadCount: 0 };
-    this.plannerTemplates.set(id, template);
+    const [template] = await db.insert(plannerTemplates)
+      .values({ ...insertTemplate, downloadCount: 0 })
+      .returning();
     return template;
   }
   
   async incrementDownloadCount(id: number): Promise<PlannerTemplate | undefined> {
-    const template = this.plannerTemplates.get(id);
-    if (template) {
-      const updatedTemplate = { ...template, downloadCount: template.downloadCount + 1 };
-      this.plannerTemplates.set(id, updatedTemplate);
-      return updatedTemplate;
-    }
-    return undefined;
+    const [template] = await db.select().from(plannerTemplates).where(eq(plannerTemplates.id, id));
+    if (!template) return undefined;
+    
+    const [updatedTemplate] = await db
+      .update(plannerTemplates)
+      .set({ downloadCount: template.downloadCount + 1 })
+      .where(eq(plannerTemplates.id, id))
+      .returning();
+    
+    return updatedTemplate;
   }
   
   // Audio methods
   async getAudioResources(): Promise<AudioResource[]> {
-    return Array.from(this.audioResources.values());
+    return await db.select().from(audioResources);
   }
   
   async getAudioResourcesByCategory(category: string): Promise<AudioResource[]> {
-    return Array.from(this.audioResources.values()).filter(
-      resource => resource.category === category
-    );
+    return await db.select().from(audioResources).where(eq(audioResources.category, category));
   }
   
   async getAudioResource(id: number): Promise<AudioResource | undefined> {
-    return this.audioResources.get(id);
+    const [resource] = await db.select().from(audioResources).where(eq(audioResources.id, id));
+    return resource || undefined;
   }
   
   async createAudioResource(insertResource: InsertAudioResource): Promise<AudioResource> {
-    const id = this.currentAudioResourceId++;
-    const resource: AudioResource = { ...insertResource, id };
-    this.audioResources.set(id, resource);
+    const [resource] = await db.insert(audioResources).values(insertResource).returning();
     return resource;
   }
   
   // Testimonial methods
   async getTestimonials(): Promise<Testimonial[]> {
-    return Array.from(this.testimonials.values());
+    return await db.select().from(testimonials);
   }
   
   async getTestimonial(id: number): Promise<Testimonial | undefined> {
-    return this.testimonials.get(id);
+    const [testimonial] = await db.select().from(testimonials).where(eq(testimonials.id, id));
+    return testimonial || undefined;
   }
   
   async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
-    const id = this.currentTestimonialId++;
-    const testimonial: Testimonial = { ...insertTestimonial, id };
-    this.testimonials.set(id, testimonial);
+    const [testimonial] = await db.insert(testimonials).values(insertTestimonial).returning();
     return testimonial;
   }
   
   // Contact methods
   async createContactMessage(insertMessage: InsertContactMessage): Promise<ContactMessage> {
-    const id = this.currentContactMessageId++;
-    const message: ContactMessage = { 
-      ...insertMessage, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.contactMessages.set(id, message);
+    const [message] = await db.insert(contactMessages)
+      .values({ ...insertMessage, createdAt: new Date() })
+      .returning();
     return message;
   }
-  
-  private initializeSampleData() {
+
+  // Initialize data
+  async initializeSampleData() {
+    // Check if data already exists
+    const existingQuotes = await db.select().from(motivationQuotes);
+    if (existingQuotes.length > 0) return; // Data already exists
+
     // Add motivation quotes
     const quotes = [
       {
@@ -251,9 +211,9 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    quotes.forEach(q => {
-      this.createMotivationQuote(q);
-    });
+    for (const q of quotes) {
+      await this.createMotivationQuote(q);
+    }
     
     // Add blog posts
     const blogPosts = [
@@ -299,9 +259,9 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    blogPosts.forEach(post => {
-      this.createBlogPost(post);
-    });
+    for (const post of blogPosts) {
+      await this.createBlogPost(post);
+    }
     
     // Add planner templates
     const plannerTemplates = [
@@ -331,9 +291,9 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    plannerTemplates.forEach(template => {
-      this.createPlannerTemplate(template);
-    });
+    for (const template of plannerTemplates) {
+      await this.createPlannerTemplate(template);
+    }
     
     // Add audio resources
     const audioResources = [
@@ -379,9 +339,9 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    audioResources.forEach(resource => {
-      this.createAudioResource(resource);
-    });
+    for (const resource of audioResources) {
+      await this.createAudioResource(resource);
+    }
     
     // Add testimonials
     const testimonials = [
@@ -405,10 +365,10 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    testimonials.forEach(testimonial => {
-      this.createTestimonial(testimonial);
-    });
+    for (const testimonial of testimonials) {
+      await this.createTestimonial(testimonial);
+    }
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
