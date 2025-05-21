@@ -33,6 +33,11 @@ export interface IStorage {
   createPlannerTemplate(template: InsertPlannerTemplate): Promise<PlannerTemplate>;
   incrementDownloadCount(id: number): Promise<PlannerTemplate | undefined>;
   
+  // Custom Planner methods
+  getCustomPlanners(userId?: number): Promise<CustomPlanner[]>;
+  getCustomPlanner(id: number): Promise<CustomPlanner | undefined>;
+  createCustomPlanner(planner: InsertCustomPlanner): Promise<CustomPlanner>;
+  
   // Audio methods
   getAudioResources(): Promise<AudioResource[]>;
   getAudioResourcesByCategory(category: string): Promise<AudioResource[]>;
