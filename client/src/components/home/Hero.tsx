@@ -1,14 +1,11 @@
 import { Link } from "wouter";
-import { useContext } from "react";
-import { ThemeContext } from "../../App";
+// Removed theme context import
 
 const Hero = () => {
-  const { theme } = useContext(ThemeContext);
+  // No longer need theme reference
   
   return (
-    <section className={`${theme === 'light' 
-      ? 'bg-gradient-to-r from-primary-light via-secondary-light to-accent-light' 
-      : 'bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900'} py-16 md:py-24`}>
+    <section className="bg-gradient-to-r from-primary-light via-secondary-light to-accent-light dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 py-16 md:py-24">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
