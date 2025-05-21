@@ -201,11 +201,31 @@ const AudioLibrary = () => {
                   </div>
                   <h3 className="text-xl font-poppins font-semibold text-neutral-800 dark:text-white mb-2">{resource.title}</h3>
                   <p className="text-neutral-600 dark:text-neutral-400 mb-4">{resource.description}</p>
+                  <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <button
+                      className="flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md"
+                      onClick={() => handlePlayToggle(resource.id)}
+                    >
+                      {playing === resource.id ? (
+                        <span className="flex items-center">
+                          <i className="fas fa-pause mr-2"></i> Pause
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          <i className="fas fa-play mr-2"></i> Play
+                        </span>
+                      )}
+                    </button>
+                    <div className="text-neutral-600 dark:text-neutral-400 text-sm">
+                      {resource.duration}
+                    </div>
+                  </div>
+                  
                   <audio 
                     ref={(el) => registerAudioRef(resource.id, el)}
                     id={`audio-${resource.id}`}
-                    className="w-full audio-player" 
-                    controls
+                    className="hidden" 
                     preload="auto"
                     src={resource.audioUrl}
                     onEnded={() => setPlaying(null)}
@@ -217,6 +237,7 @@ const AudioLibrary = () => {
                   >
                     Your browser does not support the audio element.
                   </audio>
+                </div>
                 </div>
               </div>
             ))

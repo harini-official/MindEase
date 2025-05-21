@@ -6,6 +6,7 @@ import Planner from "@/components/home/Planner";
 import AdvancedPlanner from "@/components/home/AdvancedPlanner";
 import RelaxSection from "@/components/home/RelaxSection";
 import AudioLibrary from "@/components/home/AudioLibrary";
+import AudioTest from "@/components/home/AudioTest";
 import Testimonials from "@/components/home/Testimonials";
 import ContactSupport from "@/components/home/ContactSupport";
 
@@ -25,7 +26,6 @@ const Home = () => {
       <MindfulBlog />
       <AdvancedPlanner />
       <RelaxSection />
-      <AudioTest />
       <AudioLibrary />
       <Testimonials />
       <ContactSupport />
