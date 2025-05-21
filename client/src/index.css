@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,145 +15,110 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 207 90% 54%;
-  --primary-foreground: 211 100% 99%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 20 14.3% 4.1%;
   --radius: 0.5rem;
   
-  /* Extended colors for MindEase */
-  --primary-light: 207 90% 80%;
-  --primary-dark: 207 90% 40%;
-  --secondary-light: 120 30% 80%;
-  --secondary-dark: 120 30% 40%;
-  --accent-light: 280 100% 85%;
-  --accent-dark: 280 100% 65%;
-  --chart-1: 240 70% 70%;
-  --chart-2: 330 70% 70%;
-  --chart-3: 30 70% 70%;
-  --chart-4: 150 70% 70%;
-  --chart-5: 270 70% 70%;
-  --sidebar-background: 240 10% 3.9%;
-  --sidebar-foreground: 0 0% 98%;
-  --sidebar-primary: 207 90% 54%;
-  --sidebar-primary-foreground: 211 100% 99%;
-  --sidebar-accent: 240 3.7% 15.9%;
-  --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 240 4.9% 83.9%;
+  /* MindEase custom colors - Light theme */
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #c7d2fe;
+  --secondary: #ec4899;
+  --secondary-dark: #db2777;
+  --secondary-light: #fbcfe8;
+  --accent: #14b8a6;
+  --accent-dark: #0d9488;
+  --accent-light: #99f6e4;
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-950: #0a0a0a;
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
+  --background: 20 14.3% 4.1%;
+  --foreground: 60 9.1% 97.8%;
+  --card: 20 14.3% 4.1%;
+  --card-foreground: 60 9.1% 97.8%;
+  --popover: 20 14.3% 4.1%;
+  --popover-foreground: 60 9.1% 97.8%;
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --primary: 207 90% 54%;
-  --primary-foreground: 211 100% 99%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
-  --radius: 0.5rem;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  
+  /* MindEase custom colors - Dark theme */
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #3730a3;
+  --secondary: #f472b6;
+  --secondary-dark: #ec4899;
+  --secondary-light: #831843;
+  --accent: #2dd4bf;
+  --accent-dark: #14b8a6;
+  --accent-light: #134e4a;
+  --neutral-50: #171717;
+  --neutral-100: #262626;
+  --neutral-200: #404040;
+  --neutral-300: #525252;
+  --neutral-400: #737373;
+  --neutral-500: #a3a3a3;
+  --neutral-600: #d4d4d4;
+  --neutral-700: #e5e5e5;
+  --neutral-800: #f5f5f5;
+  --neutral-900: #fafafa;
+  --neutral-950: #ffffff;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
-    @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-  }
-
-  html {
-    scroll-behavior: smooth;
+    font-family: 'Poppins', system-ui, sans-serif;
   }
 }
 
-/* Animation classes */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Custom Utility Classes */
+.shadow-soft {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-.float-animation {
-  animation: float 6s ease-in-out infinite;
+.dark .shadow-soft {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes breath {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(124, 156, 191, 0.4);
-  }
-  50% {
-    transform: scale(1.2);
-    box-shadow: 0 0 20px rgba(124, 156, 191, 0.6);
-  }
+.shadow-medium {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
 }
 
-.breathing-circle {
-  animation: breath 8s ease-in-out infinite;
+.dark .shadow-medium {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
 }
 
-/* Audio player styling */
-.audio-player::-webkit-media-controls-panel {
-  background-color: #e9ecef;
+/* Audio Player Customization */
+.audio-player {
+  --plyr-color-main: var(--primary);
+  --plyr-audio-control-color: var(--neutral-700);
+  --plyr-audio-control-background: var(--neutral-100);
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
-.audio-player::-webkit-media-controls-play-button {
-  background-color: #7c9cbf;
-  border-radius: 50%;
-}
-
-.audio-player::-webkit-media-controls-current-time-display,
-.audio-player::-webkit-media-controls-time-remaining-display {
-  color: #495057;
-}
-
-/* Font utility classes */
-.font-poppins {
-  font-family: 'Poppins', sans-serif;
-}
-
-.font-inter {
-  font-family: 'Inter', sans-serif;
-}
-
-/* Media queries for responsive layout */
-@media (max-width: 768px) {
-  .testimonial-slide {
-    width: 100%;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1023px) {
-  .testimonial-slide {
-    width: 50%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .testimonial-slide {
-    width: 33.333%;
-  }
+.dark .audio-player {
+  --plyr-color-main: var(--primary);
+  --plyr-audio-control-color: var(--neutral-300);
+  --plyr-audio-control-background: var(--neutral-700);
 }
