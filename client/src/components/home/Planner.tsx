@@ -31,19 +31,42 @@ const Planner = () => {
   });
 
   const handleDownload = (template: PlannerTemplate) => {
-    downloadMutation.mutate(template.id);
-    
-    // Create a link element to download the file
-    const link = document.createElement('a');
-    link.href = template.fileUrl;
-    link.download = template.title.replace(/\s+/g, '-').toLowerCase() + '.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast({
-      title: "Download Started",
-      description: `${template.title} is being downloaded.`,
+    // Import dynamically to reduce initial load time
+    import('./PlannerGenerator').then(({ generateTemplatePDF }) => {
+      try {
+        // Generate the PDF with real content
+        const pdfDataUri = generateTemplatePDF(template.id);
+        
+        // Create a temporary link to download the PDF
+        const link = document.createElement('a');
+        link.href = pdfDataUri;
+        link.download = `${template.title.replace(/\s+/g, '-')}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Record the download in the database
+        downloadMutation.mutate(template.id);
+        
+        toast({
+          title: "Download Started",
+          description: `${template.title} is being downloaded.`,
+        });
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+        toast({
+          title: "Download Failed",
+          description: "There was an error generating the template. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }).catch(error => {
+      console.error("Error loading PDF generator:", error);
+      toast({
+        title: "Download Failed",
+        description: "Could not load the PDF generator. Please try again.",
+        variant: "destructive",
+      });
     });
   };
 
