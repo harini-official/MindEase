@@ -226,8 +226,8 @@ const AudioLibrary = () => {
                     ref={(el) => registerAudioRef(resource.id, el)}
                     id={`audio-${resource.id}`}
                     className="hidden" 
-                    preload="auto"
-                    src={resource.audioUrl}
+                    controls={false}
+                    preload="none"
                     onEnded={() => setPlaying(null)}
                     onPause={() => {
                       if (playing === resource.id) {
@@ -235,6 +235,7 @@ const AudioLibrary = () => {
                       }
                     }}
                   >
+                    <source src={resource.audioUrl} type="audio/mpeg" />
                     Your browser does not support the audio element.
                   </audio>
                 </div>
