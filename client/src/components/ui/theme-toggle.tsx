@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { ThemeContext } from "../../App";
@@ -6,18 +6,34 @@ import { ThemeContext } from "../../App";
 export function ThemeToggle() {
   const { theme, setTheme } = useContext(ThemeContext);
 
+  // Force apply the current theme when the component mounts
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
   const toggleTheme = () => {
+    // Determine what the new theme should be (opposite of current)
     const newTheme = theme === "light" ? "dark" : "light";
+    
+    // Log for debugging
+    console.log(`Toggling theme from ${theme} to ${newTheme}`);
+    
+    // Update state
     setTheme(newTheme);
-    // Manually toggle the dark class on document element to ensure it takes effect
+    
+    // Force DOM update immediately
     if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-    // Also store the preference in localStorage
+    
+    // Store preference
     localStorage.setItem("theme", newTheme);
-    console.log("Theme toggled to:", newTheme);
   };
 
   return (
