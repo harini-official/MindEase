@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <script>
+      // Initialize theme based on user preference
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else if (storedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          localStorage.setItem('theme', 'light');
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/MindEase/assets/index-B558vaq4.js"></script>
+    <link rel="stylesheet" crossorigin href="/MindEase/assets/index-PgqqWPCZ.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+</html>
